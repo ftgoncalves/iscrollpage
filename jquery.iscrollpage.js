@@ -5,12 +5,13 @@
 
     $.fn.iscrollpage = function(opt) {
         var settings = $.extend({
-            'duration': 2000,
+            'duration': 2500,
             'locationHash': true,
             'complete': function(){},
             'start': function(){},
             'always': function(){},
-            'element': "section"
+            'element': "section",
+            'autoScroll': true
         }, opt);
 
         var _this = $(this);
@@ -23,35 +24,39 @@
             b.push(tmp.attr("id"));
         });
 
-        $(document).scroll(function() {
-            var _win = $(window);
-            var topView = _win.scrollTop();
+        if (settings.autoScroll) {
+            $(document).scroll(function() {
+                var topView = $(window).scrollTop();
 
-            if (topView > 0 && topView > mem && !isBlock) {
-                isBlock = true;
+                if (topView > 0 && topView > mem && !isBlock) {
 
-                for (var i = 0; i <= a.length; i++) {
+                    for (var i = 0; i < a.length; i++) {
 
-                    if (a[i] > mem) {
-                        mem = a[i];
-                        _this._scroll(settings, mem, b[i]);
-                        break;
+                        if (a[i] > mem) {
+                            isBlock = true;
+
+                            mem = parseInt(a[i]);
+                            _this._scroll(settings, mem, b[i]);
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (topView > 0 && topView < mem && !isBlock) {
-                isBlock = true;
-                for (var i = (a.length - 1); i >= 0; i--) {
+                if (topView > 0 && topView < mem && !isBlock) {
 
-                    if (a[i] < mem) {
-                        mem = a[i];
-                        _this._scroll(settings, mem, b[i]);
-                        break;
+                    for (var i = (a.length - 1); i >= 0; i--) {
+
+                        if (a[i] < mem) {
+                            isBlock = true;
+
+                            mem = parseInt(a[i]);
+                            _this._scroll(settings, mem, b[i]);
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
         $(this).click(function(e) {
             e.preventDefault();
@@ -72,7 +77,6 @@
             duration: settings.duration,
             start: function() {
                 mem = (typeof id == 'object') ? id.offset().top : id;
-                console.log("f:" + mem);
             },
             complete: function() {
                 if (settings.locationHash)
