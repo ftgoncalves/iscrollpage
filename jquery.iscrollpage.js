@@ -15,10 +15,13 @@
         }, opt);
 
         var _this = $(this);
+        var _window = $(window);
+
+        mem = _window.scrollTop();
 
         var a = new Array();
         var b = new Array();
-        $(settings.element).each(function(i, e){
+        $(settings.element).each(function(i, e) {
             var tmp = $(e);
             a.push(tmp.offset().top);
             b.push(tmp.attr("id"));
@@ -26,7 +29,7 @@
 
         if (settings.autoScroll) {
             $(document).scroll(function() {
-                var topView = $(window).scrollTop();
+                var topView = _window.scrollTop();
 
                 if (topView > 0 && topView > mem && !isBlock) {
 
@@ -62,7 +65,6 @@
             e.preventDefault();
 
             var _id = $(this).data('ref');
-            console.log(_id);
             var id = $(_id);
 
             isBlock = true;
